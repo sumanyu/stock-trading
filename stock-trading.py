@@ -41,6 +41,7 @@ def stock_trading(history, inpt, output, bidstream1=None, bidstream2=None, bidst
 	bids = Bids()
 	bids.loadHistory(history)
 
+	# Tail -f feature from stackoverflow
 	with open(inpt) as input_fs:
 		while True:
 			where = input_fs.tell()
@@ -49,10 +50,17 @@ def stock_trading(history, inpt, output, bidstream1=None, bidstream2=None, bidst
 				time.sleep(1)
 				input_fs.seek(where)
 			else:
-				print line # already has newline
+				command = line.strip() # already has newline
+				if command == "end":
+					break
+				else: # assuming top command with pos integers
+					cmd, top, number_of_bids = line.split(' ')
+					top = int(top)
 
-	# print bids.getTopNBids(3)
-	# bids.outputTopNBids(output, 3)
+					if bids.number_of_bids > number_of_bids:
+						bids.outputTopNBids(output, top)
+
+	print "Exiting program!"
 
 def main(args):
 	if len(args) < 8:
