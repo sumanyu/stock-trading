@@ -41,7 +41,7 @@ def stock_trading(history, inpt, output, bidstream1=None, bidstream2=None, bidst
 	bids = Bids()
 	bids.loadHistory(history)
 
-	with open(inpt, 'r') as input_fs:
+	with open(inpt) as input_fs:
 		while True:
 			where = input_fs.tell()
 			line = input_fs.readline()
@@ -55,7 +55,6 @@ def stock_trading(history, inpt, output, bidstream1=None, bidstream2=None, bidst
 	# bids.outputTopNBids(output, 3)
 
 def main(args):
-	print args, len(args)
 	if len(args) < 8:
 		print "Missing args!"
 	elif len(args) > 8:

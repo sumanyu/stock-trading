@@ -16,9 +16,9 @@ I chose max-heaps because its suitable for maintaining mostly sorted data sets. 
 * Output `top n`
 
 ## To do
-* Respond to input and bidstreams
-* Multi threading for input and bidstreams
-* Test suite
+* Respond to input
+* Multi threading
+* 
 
 ## Resources used
 * http://stackoverflow.com/
