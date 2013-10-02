@@ -27,6 +27,7 @@ class Bids:
     print N, self.number_of_bids
     if N <= self.number_of_bids:
       with open(filename, 'w') as fs_output:
+        print self.sorted_bids
         for bid in self.getTopNBids(N):
           fs_output.write(str(bid))
           fs_output.write(' ')
@@ -82,6 +83,9 @@ def stock_trading(history, inpt, output, bs1_name=None, bs2_name=None, bs3_name=
 
   # Start bitstream threads
   bs1.start()
+  bs2.start()
+  bs3.start()
+  bs4.start()
 
   # Tail -f feature from stackoverflow
   with open(inpt, 'r') as input_fs:
@@ -100,12 +104,11 @@ def stock_trading(history, inpt, output, bs1_name=None, bs2_name=None, bs3_name=
         elif len(command.split(' ')) == 3: # assuming top command with pos integers
           print command
           cmd, top, number_of_bids = command.split(' ')
-          top = int(top)
+          top, number_of_bids = [int(x) for x in [top, number_of_bids]]
 
-          print bids.number_of_bids, number_of_bids, (bids.number_of_bids > number_of_bids)
+          print bids.number_of_bids, number_of_bids, (bids.number_of_bids > number_of_bids)      
 
           if (bids.number_of_bids > number_of_bids):
-            print "outputting bids"
             bids.outputTopNBids(output, top)
 
   print "Exiting program!"
