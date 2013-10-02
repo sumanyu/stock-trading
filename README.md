@@ -15,13 +15,15 @@ I chose max-heaps because its suitable for maintaining mostly sorted data sets. 
 * Load max-heap bids with history
 * Output `top n k`
 * Respond to input
+* End on `end`
+* Start bid streams on separate threads
+* Synchronize bid stream bids to main thread bids object
 
 ## In progress
-* Start bid streams on separate threads
+* Test suite
 
 ## To do
-* Synchronize bid stream bids to main thread bids object
-* Test suite
+* Optimization and refactor
 
 ## Resources used
 * http://stackoverflow.com/
