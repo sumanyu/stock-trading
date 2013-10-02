@@ -30,7 +30,6 @@ class Bids:
     # print N, self.number_of_bids
     if N <= self.number_of_bids:
       with open(filename, 'w') as fs_output:
-        # print self.sorted_bids
         for bid in self.getTopNBids(N):
           fs_output.write(str(bid))
           fs_output.write(' ')
@@ -62,16 +61,13 @@ class BidStream(threading.Thread):
           time.sleep(1)
           bs_fs.seek(where)
         else:
-          bid_value = line.strip()
-          # print bid_value
-          # print bids.sorted_bids
+          bid_value = int(line.strip())
           
           BID_LOCK.acquire()
-          bids.addBid(-1 * int(bid_value))
-          # print bids.sorted_bids
+          bids.addBid(-1 * bid_value)
           BID_LOCK.release()
 
-def stock_trading(history, inpt, output, bs_names):
+def stock_trading(history, inpt, output, bidstreams):
   global bids
   global EXIT_FLAG
 
@@ -79,11 +75,13 @@ def stock_trading(history, inpt, output, bs_names):
   bids.loadHistory(history)
 
   # Set up and start bidstream threads
-  for bs_name in bs_names:
-    BidStream(bs_name).start()
+  for bidstream in bidstreams:
+    BidStream(bidstream).start()
 
   # Tail -f feature from stackoverflow
   with open(inpt, 'r') as input_fs:
+
+    # Process commands last appended to the file, ignore otherwise (like tail -f)
     while EXIT_FLAG:
       where = input_fs.tell()
       line = input_fs.readline()
@@ -97,13 +95,11 @@ def stock_trading(history, inpt, output, bs_names):
           EXIT_FLAG = 0
           BID_LOCK.release()
         elif len(command.split(' ')) == 3: # assuming top command with pos integers
-          # print command
-          cmd, top, number_of_bids = command.split(' ')
+          cmd, number_of_bids, top = command.split(' ')
           top, number_of_bids = [int(x) for x in [top, number_of_bids]]
 
-          bids.outputTopNBids(output, top)
-
-  # print "Exiting program!"
+          if bids.number_of_bids > number_of_bids:
+            bids.outputTopNBids(output, top)
 
 def main(args):
   if len(args) < 8:
@@ -111,8 +107,9 @@ def main(args):
   elif len(args) > 8:
     print "Too many args!"
   else:
-    name, hist, inpt, outpt, bs1, bs2, bs3, bs4 = args
-    stock_trading(hist, inpt, outpt, [bs1, bs2, bs3, bs4])
+    # Supports variable list of bidstreams
+    (name, hist, inpt, outpt), bidstreams = args[:4], args[4:]
+    stock_trading(hist, inpt, outpt, bidstreams)
 
 if __name__ == '__main__':
   main(sys.argv)
