@@ -28,3 +28,4 @@ I chose max-heaps because its suitable for maintaining mostly sorted data sets. 
 ## Resources used
 * http://stackoverflow.com/
 * http://docs.python.org/
+* http://inventwithpython.com/blog/2013/04/22/multithreaded-python-tutorial-with-threadworms/
